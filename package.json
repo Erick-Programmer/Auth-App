@@ -4,7 +4,8 @@
   "description": "auth app (rest full api)",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node Backend/server.js",
+    "server": "nodemon Backend/server.js"
   },
   "author": "Carlos Erick",
   "license": "MIT",
@@ -12,6 +13,10 @@
     "colors": "^1.4.0",
     "dotenv": "^16.4.2",
     "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
     "mongoose": "^8.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
   }
 }
