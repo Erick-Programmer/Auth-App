@@ -1,5 +1,5 @@
 ## Authentication App
 
-#### Technologies: MongoDB, NodeJs, Express, Jwt.
+#### Technologies: MongoDB, NodeJs, Express, Jwt, React, Redux and Redux Toolkit
 
 #### Details: Project current in progress...

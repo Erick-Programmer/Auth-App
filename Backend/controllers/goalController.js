@@ -5,7 +5,7 @@ const Goal = require('../models/goalModel') //chama o modulo do modelo.
 //funções modularizadas - apis definidas pelo controlador.
 
 //@desc Get Goals
-//@route GET /apis/goals
+//@route GET /api/goals
 //@acess Private
 const getGoals =  asyncHandler(async(req, res) => {
     const goals = await Goal.find() //no momento buscando todos os dados.
@@ -14,7 +14,7 @@ const getGoals =  asyncHandler(async(req, res) => {
 })
 
 //@desc Set Goals
-//@route POST /apis/goals
+//@route POST /api/goals
 //@acess Private
 const setGoals =  asyncHandler(async (req, res)=> {
     if(!req.body.text){
@@ -31,7 +31,7 @@ const setGoals =  asyncHandler(async (req, res)=> {
 })
 
 //@desc Update Goals
-//@route PUT /apis/goals
+//@route PUT /api/goals
 //@acess Private
 const updateGoals =  asyncHandler(async (req, res)=> {
     const goal = await Goal.findById(req.params.id) //procura pelo id
@@ -49,7 +49,7 @@ const updateGoals =  asyncHandler(async (req, res)=> {
 })
 
 //@desc Delete Goals
-//@route DELETE /apis/goals
+//@route DELETE /api/goals
 //@acess Private
 const deleteGoals =  asyncHandler(async (req, res)=> {
     const goal = await Goal.findById(req.params.id) //procura pelo id
