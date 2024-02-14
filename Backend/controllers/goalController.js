@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
 const Goal = require('../models/goalModel') //chama o modulo do modelo.
+const User = require('../models/userModel')
 
 //funções modularizadas - apis definidas pelo controlador.
 
@@ -8,7 +9,7 @@ const Goal = require('../models/goalModel') //chama o modulo do modelo.
 //@route GET /api/goals
 //@acess Private
 const getGoals =  asyncHandler(async(req, res) => {
-    const goals = await Goal.find() //no momento buscando todos os dados.
+    const goals = await Goal.find({ user: req.user.id }) //no momento buscando todos os dados.
     // res.status(200).json({ message: `Get goals`})
     res.status(200).json({goals})
 })
@@ -25,9 +26,12 @@ const setGoals =  asyncHandler(async (req, res)=> {
     // res.status(200).json({ message: 'Set goals'})
     const goal = await Goal.create({
         text: req.body.text,
+        user: req.user.id, //fornecer o id.
     })
 
-    res.status(200).json({goal})
+
+
+    res.status(200).json(goal)
 })
 
 //@desc Update Goals
@@ -39,6 +43,20 @@ const updateGoals =  asyncHandler(async (req, res)=> {
     if(!goal) { //se nao encontra o id
         res.status(400)
         throw new Error('Goal not found')
+    }
+
+    const user = await User.findById(req.user.id) //ao logar temos o usuario
+
+    //check for user
+    if(!user){
+        res.status(401)
+        throw new Error('User not Found')
+    }
+    
+    //Make Sure the looged in user matches the goal user
+    if(goal.user.toString() !== user.id){ //ao logar foi recebido o id do usuario e compara com o existente se for diferente
+        res.status(401)
+        throw new Error('User not authorized')
     }
     
     const updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body,
@@ -57,6 +75,20 @@ const deleteGoals =  asyncHandler(async (req, res)=> {
     if(!goal) { //se nao encontra o id
         res.status(400)
         throw new Error('Goal not found')
+    }
+
+    const user = await User.findById(req.user.id)
+
+    //check for user
+    if(!user){
+        res.status(401)
+        throw new Error('User not Found')
+    }
+    
+    //Make Sure the looged in user matches the goal user
+    if(goal.user.toString() !== user.id){
+        res.status(401)
+        throw new Error('User not authorized')
     }
 
     await goal.deleteOne() //achado o id, deleta dados.
