@@ -1,6 +1,11 @@
 //declarar estados
 import { useState, useEffect } from 'react'
 import { FaSignInAlt } from 'react-icons/fa'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { login, reset } from '../features/auth/authSlice'
+
 
 function Login() {
   //estado de nivel de componente
@@ -13,6 +18,13 @@ function Login() {
 
   //variável desestruturada vinda dos dados do formulário.
   const { email, password } = formData  
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  )
 
   //aciona o estado anterior (setFormData)
   //copia o objeto (spread operator) de dentro do array setFormData.
@@ -27,6 +39,17 @@ function Login() {
   //dispara uma vez por clique.
   const onSubmit = (e) => {
     e.preventDefault()
+
+    if(password === password2){
+      toast.error('Passwords do not match')
+    }else {
+      const userData = {
+        email,
+        password
+      }
+    }
+
+    dispatch(login(userData))
   }
 
   return (

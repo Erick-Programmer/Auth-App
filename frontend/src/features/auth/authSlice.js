@@ -24,7 +24,7 @@ export const register = createAsyncThunk(
         } catch (error){
             const message = 
                 (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-                return thunkAPI.rejectWithValue(message);
+                return thunkAPI.rejectWithValue(message); //solicitação rejeitada envia o valor por message e contabilizado por payload
         }
     }
 )
@@ -40,7 +40,23 @@ export const authSlice = createSlice({
             state.message = ''
         },
     },
-    extraReducers: () => {}
+    extraReducers: (builder) => {
+        builder
+            .addCase(register.pending, (state) => {
+                state.IsLoading = true
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.IsLoading = false
+                state.isSucess = true
+                state.user = action.payload
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.IsLoading = false
+                state.isError = true
+                state.message = action.payload //ao rejeitar, o payload contabiliza definindo o estado em state.message
+                state.user = null //dando errada a solicitação é registrado como nulo no registro.
+            })
+    }
 })
 
 export const { reset } = authSlice.actions
