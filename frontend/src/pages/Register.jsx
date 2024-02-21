@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaUser } from 'react-icons/fa'
-import { register, reset } from '../features/auth/authSlice'
+import {register, reset} from '../features/auth/authSlice'
+import Spinner from '../components/Spinner'
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,11 +18,26 @@ function Register() {
   const { name, email, password, password2 } = formData
 
   const navigate = useNavigate()
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
+  //selecionar o estado e desestruturar (passar para as variáveis)
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   )
+  
+  //despachar o estado resetado apos o registro.
+  useEffect(() => {
+    if(isError) {
+      toast.Error(message)
+    }
+
+    if(isSuccess || user) {
+      navigate('/');
+    }
+
+    dispatch(reset())
+
+  }, [user, isError, isSuccess, message, navigate, dispatch]) 
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -41,10 +57,14 @@ function Register() {
         email,
         password,
       }
+
+      //ao registrar, envia para o armazenamento local em authService
+      dispatch(register(userData))
     }
+  }
 
-    dispatch(register(userData))
-
+  if(isLoading){
+    return <Spinner></Spinner>
   }
 
   return (

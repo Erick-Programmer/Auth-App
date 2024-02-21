@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login, reset } from '../features/auth/authSlice'
-
+import Spinner from '../components/Spinner'
 
 function Login() {
   //estado de nivel de componente
@@ -22,9 +22,24 @@ function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  //selecionar o estado e desestruturar (passar para as variáveis)
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   )
+
+  //despachar o estado resetado apos o registro.
+  useEffect(() => {
+    if(isError) {
+      toast.Error(message)
+    }
+
+    if(isSuccess || user) {
+      navigate('/');
+    }
+
+    dispatch(reset())
+
+  }, [user, isError, isSuccess, message, navigate, dispatch]) 
 
   //aciona o estado anterior (setFormData)
   //copia o objeto (spread operator) de dentro do array setFormData.
@@ -40,16 +55,17 @@ function Login() {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if(password === password2){
-      toast.error('Passwords do not match')
-    }else {
-      const userData = {
-        email,
-        password
-      }
+    const userData = {
+      email,
+      password,
     }
 
     dispatch(login(userData))
+
+  }
+
+  if(isLoading) {
+    return <Spinner />
   }
 
   return (
